@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:postcard_project/blocs/postcard_bloc/postcard_bloc.dart';
 import 'package:postcard_project/blocs/user_account_bloc/user_account_bloc.dart';
 import 'package:postcard_project/components/login_page.dart';
 import 'package:postcard_project/services/postcard_api_provider.dart';
@@ -23,9 +24,10 @@ class MyApp extends StatelessWidget {
               create: (BuildContext context) => UserAccountBloc(
                   RepositoryProvider.of<PostcardApiProvider>(context)),
             ),
-            // BlocProvider<BlocB>(
-            //   create: (BuildContext context) => BlocB(),
-            // ),
+            BlocProvider<PostcardBloc>(
+              create: (BuildContext context) => PostcardBloc(
+                  RepositoryProvider.of<PostcardApiProvider>(context)),
+            ),
           ],
           child: MaterialApp(
               title: 'Flutter Demo',

@@ -22,7 +22,7 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
         if (decodedMessage["data"]["response"] == 'OK') {
           add(UserSignInSuccessEvent(decodedMessage["data"]["response"]));
         } else {
-          add(UserSignInFailedEvent(decodedMessage["errors"]));
+          add(UserSignInFailedEvent(decodedMessage["errors"].cast<String>()));
         }
       }
 

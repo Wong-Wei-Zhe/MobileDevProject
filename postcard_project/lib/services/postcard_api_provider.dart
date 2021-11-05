@@ -19,6 +19,14 @@ class PostcardApiProvider {
         .add('{"type": "sign_in", "data": {"name": "$userNameStr"}}');
   }
 
+  void sendGetPostcardRequest(
+      {String lastId = '', String sortBy = 'date', int limit = 10}) {
+    _postCardWebSocket.sink.add(
+        '{"type": "get_posts", "data": {"lastId": "$lastId", "sortBy": "$sortBy"}}');
+    // _postCardWebSocket.sink.add(
+    //     '{"type": "get_posts", "data": {"lastId": "$lastId", "sortBy": "$sortBy", "limit": $limit}}');
+  }
+
   void terminateAPIStream() {
     _postCardWebSocket.sink.close();
     _postCardAPIController.close();
