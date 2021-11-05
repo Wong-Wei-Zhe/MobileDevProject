@@ -2,8 +2,8 @@ import 'package:rxdart/rxdart.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class PostcardApiProvider {
-  // final String _postCardAPI = 'ws://besquare-demo.herokuapp.com';
-  final String _postCardAPI = 'wss://ws.binaryws.com/websockets/v3?app_id=1089';
+  final String _postCardAPI = 'ws://besquare-demo.herokuapp.com';
+  //final String _postCardAPI = 'wss://ws.binaryws.com/websockets/v3?app_id=1089';
   late final _postCardWebSocket;
   final _postCardAPIController = BehaviorSubject<String>();
 
@@ -14,8 +14,9 @@ class PostcardApiProvider {
     });
   }
 
-  void sendSignInRequest() {
-    _postCardWebSocket.sink.add('{"time": 1}');
+  void sendSignInRequest(String userNameStr) {
+    _postCardWebSocket.sink
+        .add('{"type": "sign_in", "data": {"name": "$userNameStr"}}');
   }
 
   void terminateAPIStream() {

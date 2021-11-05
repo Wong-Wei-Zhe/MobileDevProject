@@ -33,7 +33,7 @@ class _PostMainPageState extends State<PostMainPage> {
           const Text('Yaaa'),
           ElevatedButton(
             onPressed: () {
-              userAccBloc.add(UserSignInEvent());
+              //userAccBloc.add(UserSignInEvent());
             },
             child: const Text('Sign In'),
           ),

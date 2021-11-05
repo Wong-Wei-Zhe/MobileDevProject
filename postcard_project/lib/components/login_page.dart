@@ -13,7 +13,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _userNameField = TextEditingController();
-  late final userAccBloc;
+  late final UserAccountBloc userAccBloc;
 
   @override
   void initState() {
@@ -27,6 +27,15 @@ class _LoginPageState extends State<LoginPage> {
     _userNameField.dispose();
     userAccBloc.add(UserClosedEvent());
     super.dispose();
+  }
+
+  void _snakBarCall(String message) {
+    final snackBar = SnackBar(content: Text(message));
+    ScaffoldMessenger.of(context)
+      ..removeCurrentSnackBar(
+        reason: SnackBarClosedReason.remove,
+      )
+      ..showSnackBar(snackBar);
   }
 
   @override
@@ -49,58 +58,76 @@ class _LoginPageState extends State<LoginPage> {
           ),
           ElevatedButton(
             onPressed: () {
-              userAccBloc.add(UserSignInEvent());
+              userAccBloc.add(UserSignInEvent(_userNameField.text));
             },
             child: const Text('Sign In'),
           ),
-          ElevatedButton(
-            onPressed: () {
-              userAccBloc.add(UserClosedEvent());
+          BlocListener<UserAccountBloc, UserAccountState>(
+            listener: (context, state) {
+              if (state is UserSignInProgressingState) {
+                _snakBarCall('Loging In...');
+              }
+              if (state is UserSignInSuccessState) {
+                _snakBarCall('Success!');
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const PostMainPage()));
+              }
+              if (state is UserSignInFailedState) {
+                _snakBarCall(state.toString());
+              }
             },
-            child: const Text('Close'),
+            child: const SizedBox.shrink(),
           ),
-          ElevatedButton(
-            onPressed: () {
-              ////////
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const PostMainPage()),
-              );
-              ////////////
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //       builder: (context)
-              //           //return const PostMainPage();
-              //           =>
-              //           BlocProvider.value(
-              //             value: BlocProvider.of<UserAccountBloc>(context),
-              //             child: const PostMainPage(),
-              //           )),
-              // );
-              ///////////
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(builder: (context) {
-              //     return MultiBlocProvider(
-              //       providers: [
-              //         BlocProvider<UserAccountBloc>(
-              //           create: (BuildContext context) => UserAccountBloc(
-              //               RepositoryProvider.of<PostcardApiProvider>(
-              //                   context)),
-              //         ),
-              //         // BlocProvider<BlocB>(
-              //         //   create: (BuildContext context) => BlocB(),
-              //         // ),
-              //       ],
-              //       child: const PostMainPage(),
-              //     );
-              //   }),
-              // );
-              ///////////
-            },
-            child: const Text('Navigate Test'),
-          ),
+          // ElevatedButton(
+          //   onPressed: () {
+          //     userAccBloc.add(UserClosedEvent());
+          //   },
+          //   child: const Text('Close'),
+          // ),
+          // ElevatedButton(
+          //   onPressed: () {
+          //     ////////
+          //     Navigator.push(
+          //       context,
+          //       MaterialPageRoute(builder: (context) => const PostMainPage()),
+          //     );
+          //     ////////////
+          //     // Navigator.push(
+          //     //   context,
+          //     //   MaterialPageRoute(
+          //     //       builder: (context)
+          //     //           //return const PostMainPage();
+          //     //           =>
+          //     //           BlocProvider.value(
+          //     //             value: BlocProvider.of<UserAccountBloc>(context),
+          //     //             child: const PostMainPage(),
+          //     //           )),
+          //     // );
+          //     ///////////
+          //     // Navigator.push(
+          //     //   context,
+          //     //   MaterialPageRoute(builder: (context) {
+          //     //     return MultiBlocProvider(
+          //     //       providers: [
+          //     //         BlocProvider<UserAccountBloc>(
+          //     //           create: (BuildContext context) => UserAccountBloc(
+          //     //               RepositoryProvider.of<PostcardApiProvider>(
+          //     //                   context)),
+          //     //         ),
+          //     //         // BlocProvider<BlocB>(
+          //     //         //   create: (BuildContext context) => BlocB(),
+          //     //         // ),
+          //     //       ],
+          //     //       child: const PostMainPage(),
+          //     //     );
+          //     //   }),
+          //     // );
+          //     ///////////
+          //   },
+          //   child: const Text('Navigate Test'),
+          // ),
         ],
       ),
     );
