@@ -27,6 +27,11 @@ class PostcardApiProvider {
     //     '{"type": "get_posts", "data": {"lastId": "$lastId", "sortBy": "$sortBy", "limit": $limit}}');
   }
 
+  void sendCreatePostRequest(String title, String description, String imagUrl) {
+    _postCardWebSocket.sink.add(
+        '{"type": "create_post", "data": {"title": "$title", "description": "$description", "image": "$imagUrl"}}');
+  }
+
   void terminateAPIStream() {
     _postCardWebSocket.sink.close();
     _postCardAPIController.close();

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:postcard_project/blocs/user_account_bloc/user_account_bloc.dart';
 import 'package:postcard_project/components/post_main_page.dart';
-import 'package:postcard_project/services/postcard_api_provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -29,7 +28,7 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  void _snakBarCall(String message) {
+  void _snackBarCall(String message) {
     final snackBar = SnackBar(content: Text(message));
     ScaffoldMessenger.of(context)
       ..removeCurrentSnackBar(
@@ -65,17 +64,17 @@ class _LoginPageState extends State<LoginPage> {
           BlocListener<UserAccountBloc, UserAccountState>(
             listener: (context, state) {
               if (state is UserSignInProgressingState) {
-                _snakBarCall('Loging In...');
+                _snackBarCall('Loging In...');
               }
               if (state is UserSignInSuccessState) {
-                _snakBarCall('Success!');
+                _snackBarCall('Success!');
                 Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => const PostMainPage()));
               }
               if (state is UserSignInFailedState) {
-                _snakBarCall(state.toString());
+                _snackBarCall(state.toString());
               }
             },
             child: const SizedBox.shrink(),
