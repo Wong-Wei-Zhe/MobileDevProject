@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:postcard_project/models/postcard_model.dart';
 import 'package:postcard_project/services/postcard_api_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'postcard_event.dart';
 part 'postcard_state.dart';
@@ -23,20 +24,7 @@ class PostcardBloc extends Bloc<PostcardEvent, PostcardState> {
       final decodedMessage = jsonDecode(message);
 
       if (decodedMessage["type"] == 'all_posts') {
-        List<PostCardModel> tempData = [];
-        decodedMessage["data"]["posts"].forEach((data) => {
-              tempData.add(PostCardModel(
-                  id: data["_id"],
-                  title: data["title"],
-                  description: data["description"],
-                  imageUrl: data["image"],
-                  date: data["date"],
-                  author: data["author"],
-                  selfAuthor: data["author"] == _loggedUser ? true : false))
-            });
-        print("DATA LENGTH!");
-        print(tempData.length);
-        add(PostCardFetchSuccessEvent(tempData));
+        _allPostProccess(decodedMessage);
       }
 
       // List<String> lastPostList = [];
@@ -47,6 +35,34 @@ class PostcardBloc extends Bloc<PostcardEvent, PostcardState> {
       // print(lastPostList);
       // postCardApi.sendGetPostcardRequest(lastPostList[0], 'date', 1);
     });
+  }
+
+  void _allPostProccess(dynamic decodedMessage) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    dynamic encodedFavoriteList;
+    List<String> favoriteList = [];
+    if (prefs.containsKey('favoritelist')) {
+      encodedFavoriteList = prefs.getString('favoritelist');
+      jsonDecode(encodedFavoriteList).forEach((data) => favoriteList.add(data));
+    }
+
+    List<PostCardModel> tempData = [];
+    decodedMessage["data"]["posts"].forEach((data) => {
+          tempData.add(PostCardModel(
+            id: data["_id"],
+            title: data["title"],
+            description: data["description"],
+            imageUrl: data["image"],
+            date: data["date"],
+            author: data["author"],
+            selfAuthor: data["author"] == _loggedUser ? true : false,
+            favorite: favoriteList.contains(data["_id"]) ? true : false,
+          ))
+        });
+    print("DATA LENGTH!");
+    print(tempData.length);
+    add(PostCardFetchSuccessEvent(tempData));
   }
 
   void logUserName(String userName) {

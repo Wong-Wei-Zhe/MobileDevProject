@@ -6,15 +6,18 @@ class PostCardModel {
   final String date;
   final String author;
   final bool selfAuthor;
+  bool favorite;
 
-  PostCardModel(
-      {this.id = 'NA',
-      this.title = 'NA',
-      this.description = 'NA',
-      this.imageUrl = 'NA',
-      this.date = 'NA',
-      this.author = 'NA',
-      this.selfAuthor = false});
+  PostCardModel({
+    this.id = 'NA',
+    this.title = 'NA',
+    this.description = 'NA',
+    this.imageUrl = 'NA',
+    this.date = 'NA',
+    this.author = 'NA',
+    this.selfAuthor = false,
+    this.favorite = false,
+  });
 
   // String get id => _id;
   // String get title => _title;

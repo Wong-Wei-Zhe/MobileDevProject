@@ -1,4 +1,4 @@
-import 'dart:html';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -47,6 +47,20 @@ class _PostMainPageState extends State<PostMainPage> {
       ..showSnackBar(snackBar);
   }
 
+  void _testEncode() {
+    List<String> testData = ['22', '33', '44'];
+    dynamic encodedStuff = jsonEncode(testData);
+    dynamic decodedStuff = jsonDecode(encodedStuff);
+    decodedStuff.forEach((data) => print(data));
+    //print(decodedStuff);
+  }
+
+  void _testRemove() {
+    print(postcardBloc.state.postCards[1].author);
+    postcardBloc.state.postCards.removeAt(1);
+    print(postcardBloc.state.postCards[1].author);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,7 +92,13 @@ class _PostMainPageState extends State<PostMainPage> {
                     print(postcardBloc.state);
                     postcardBloc.add(PostCardFetchEvent());
                   },
-                  child: const Text('Sign In'),
+                  child: const Text('Refresh'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    _testRemove();
+                  },
+                  child: const Text('Remove Test'),
                 ),
               ],
             ),
@@ -94,7 +114,8 @@ class _PostMainPageState extends State<PostMainPage> {
                       child: ListView.builder(
                         itemCount: state.postCards.length,
                         itemBuilder: (BuildContext context, int index) {
-                          return PostCardDisplay(state.postCards[index]);
+                          return PostCardDisplay(
+                              state.postCards[index], widget._userName);
                         },
                       ),
                     );
