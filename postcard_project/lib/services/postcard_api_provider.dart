@@ -32,6 +32,11 @@ class PostcardApiProvider {
         '{"type": "create_post", "data": {"title": "$title", "description": "$description", "image": "$imagUrl"}}');
   }
 
+  void sendDeletePostRequest(String postId) {
+    _postCardWebSocket.sink
+        .add('{"type": "delete_post", "data": {"postId": "$postId"}}');
+  }
+
   void terminateAPIStream() {
     _postCardWebSocket.sink.close();
     _postCardAPIController.close();

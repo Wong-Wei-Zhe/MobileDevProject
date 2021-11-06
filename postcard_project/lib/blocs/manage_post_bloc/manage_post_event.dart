@@ -17,7 +17,13 @@ class CreatePostEvent extends ManagePostEvent {
 
 class CreatePostSucceedEvent extends ManagePostEvent {}
 
-class DeletePostEvent extends ManagePostEvent {}
+class DeletePostEvent extends ManagePostEvent {
+  final String postId;
+
+  const DeletePostEvent(this.postId);
+}
+
+class DeletePostSucceedEvent extends ManagePostEvent {}
 
 class ManagePostSucceedEvent extends ManagePostEvent {}
 

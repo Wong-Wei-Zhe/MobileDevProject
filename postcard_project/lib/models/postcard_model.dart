@@ -5,6 +5,7 @@ class PostCardModel {
   final String imageUrl;
   final String date;
   final String author;
+  final bool selfAuthor;
 
   PostCardModel(
       {this.id = 'NA',
@@ -12,7 +13,8 @@ class PostCardModel {
       this.description = 'NA',
       this.imageUrl = 'NA',
       this.date = 'NA',
-      this.author = 'NA'});
+      this.author = 'NA',
+      this.selfAuthor = false});
 
   // String get id => _id;
   // String get title => _title;

@@ -71,7 +71,8 @@ class _LoginPageState extends State<LoginPage> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const PostMainPage()));
+                        builder: (context) =>
+                            PostMainPage(_userNameField.text)));
               }
               if (state is UserSignInFailedState) {
                 _snackBarCall(state.toString());

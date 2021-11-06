@@ -2,13 +2,15 @@ import 'dart:html';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:postcard_project/blocs/manage_post_bloc/manage_post_bloc.dart';
 import 'package:postcard_project/blocs/postcard_bloc/postcard_bloc.dart';
 import 'package:postcard_project/blocs/user_account_bloc/user_account_bloc.dart';
 import 'package:postcard_project/components/create_post_page.dart';
 import 'package:postcard_project/components/post_card_display.dart';
 
 class PostMainPage extends StatefulWidget {
-  const PostMainPage({Key? key}) : super(key: key);
+  final String _userName;
+  const PostMainPage(this._userName, {Key? key}) : super(key: key);
 
   @override
   _PostMainPageState createState() => _PostMainPageState();
@@ -17,11 +19,15 @@ class PostMainPage extends StatefulWidget {
 class _PostMainPageState extends State<PostMainPage> {
   late final UserAccountBloc userAccBloc;
   late final PostcardBloc postcardBloc;
+  late final ManagePostBloc _managePostBloc;
 
   @override
   void initState() {
     userAccBloc = BlocProvider.of<UserAccountBloc>(context);
     postcardBloc = BlocProvider.of<PostcardBloc>(context);
+    _managePostBloc = BlocProvider.of<ManagePostBloc>(context);
+    postcardBloc.logUserName(widget._userName);
+    _managePostBloc.initializeApiListen();
     postcardBloc.initializeApiListen();
     super.initState();
   }
@@ -30,6 +36,15 @@ class _PostMainPageState extends State<PostMainPage> {
   void dispose() {
     //userAccBloc.add(UserClosedEvent());
     super.dispose();
+  }
+
+  void _snackBarCall(String message) {
+    final snackBar = SnackBar(content: Text(message));
+    ScaffoldMessenger.of(context)
+      ..removeCurrentSnackBar(
+        reason: SnackBarClosedReason.remove,
+      )
+      ..showSnackBar(snackBar);
   }
 
   @override
@@ -59,6 +74,8 @@ class _PostMainPageState extends State<PostMainPage> {
                 ElevatedButton(
                   onPressed: () {
                     //userAccBloc.add(UserSignInEvent());
+                    print('ON BUTTON');
+                    print(postcardBloc.state);
                     postcardBloc.add(PostCardFetchEvent());
                   },
                   child: const Text('Sign In'),
@@ -91,6 +108,20 @@ class _PostMainPageState extends State<PostMainPage> {
                 }
                 return Text('data');
               },
+            ),
+            BlocListener<ManagePostBloc, ManagePostState>(
+              listener: (context, state) {
+                if (state is DeletePostSubmittingState) {
+                  _snackBarCall('Deleting Postcard...');
+                }
+                if (state is DeletePostSucceedState) {
+                  _snackBarCall('Deleted Successfully');
+                }
+                if (state is ManagePostFailedState) {
+                  _snackBarCall(state.toString());
+                }
+              },
+              child: const SizedBox.shrink(),
             ),
           ],
         ),

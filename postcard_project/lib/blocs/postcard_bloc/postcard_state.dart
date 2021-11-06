@@ -10,7 +10,7 @@ class PostcardState extends Equatable {
       {this.status = PostFetchStatus.initial,
       this.postCards = const <PostCardModel>[]});
 
-  PostcardState copyObj(
+  PostcardState copyWith(
       {PostFetchStatus? status, List<PostCardModel>? postCards}) {
     return PostcardState(
         status: status ?? this.status, postCards: postCards ?? this.postCards);
@@ -22,7 +22,7 @@ class PostcardState extends Equatable {
   }
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [status, postCards];
 }
 
 class PostcardInitial extends PostcardState {}

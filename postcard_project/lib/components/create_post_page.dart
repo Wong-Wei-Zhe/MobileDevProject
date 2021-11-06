@@ -19,7 +19,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
   @override
   void initState() {
     _managePostBloc = BlocProvider.of<ManagePostBloc>(context);
-    _managePostBloc.initializeApiListen();
     _titleTextField.addListener(_ifSubmitPostCardAllow);
     _descriptionTextField.addListener(_ifSubmitPostCardAllow);
     _imgUrlTextField.addListener(_ifSubmitPostCardAllow);

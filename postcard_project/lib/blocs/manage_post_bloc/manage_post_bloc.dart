@@ -13,8 +13,9 @@ class ManagePostBloc extends Bloc<ManagePostEvent, ManagePostState> {
   ManagePostBloc(this.postCardApi) : super(ManagePostInitial()) {
     on<ManagePostEvent>(_managePostEvent);
     on<CreatePostEvent>(_createPostEvent);
-    on<CreatePostSucceedEvent>(_createPostSucceedEvent);
     on<DeletePostEvent>(_deletePostEvent);
+    on<CreatePostSucceedEvent>(_createPostSucceedEvent);
+    on<DeletePostSucceedEvent>(_deletePostSucceedEvent);
     on<ManagePostSucceedEvent>(_managePostSucceedEvent);
     on<ManagePostFailEvent>(_managePostFailEvent);
   }
@@ -23,8 +24,21 @@ class ManagePostBloc extends Bloc<ManagePostEvent, ManagePostState> {
     postCardApi.postCardAPIController.listen((message) {
       final decodedMessage = jsonDecode(message);
 
+      if (decodedMessage["type"] != 'all_posts') {
+        print(decodedMessage);
+      }
+
       if (decodedMessage["type"] == 'new_post') {
+        print('Succed');
         add(CreatePostSucceedEvent());
+      }
+
+      if (decodedMessage["type"] == 'delete_post') {
+        if (decodedMessage["data"]["response"] == 'OK') {
+          add(DeletePostSucceedEvent());
+        } else {
+          add(ManagePostFailEvent(decodedMessage["errors"].cast<String>()));
+        }
       }
 
       if (decodedMessage["type"] == 'error') {
@@ -47,10 +61,20 @@ class ManagePostBloc extends Bloc<ManagePostEvent, ManagePostState> {
     emit(CreatePostSucceedState());
   }
 
-  void _deletePostEvent(DeletePostEvent event, Emitter<ManagePostState> emit) {}
+  void _deletePostSucceedEvent(
+      DeletePostSucceedEvent event, Emitter<ManagePostState> emit) {
+    emit(DeletePostSucceedState());
+  }
+
+  void _deletePostEvent(DeletePostEvent event, Emitter<ManagePostState> emit) {
+    postCardApi.sendDeletePostRequest(event.postId);
+    emit(DeletePostSubmittingState());
+  }
 
   void _managePostSucceedEvent(
-      ManagePostSucceedEvent event, Emitter<ManagePostState> emit) {}
+      ManagePostSucceedEvent event, Emitter<ManagePostState> emit) {
+    emit(ManagePostSucceedState());
+  }
 
   void _managePostFailEvent(
       ManagePostFailEvent event, Emitter<ManagePostState> emit) {

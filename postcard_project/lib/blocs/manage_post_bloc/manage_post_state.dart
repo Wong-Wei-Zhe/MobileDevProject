@@ -11,7 +11,13 @@ class ManagePostInitial extends ManagePostState {}
 
 class CreatePostSubmittingState extends ManagePostState {}
 
+class DeletePostSubmittingState extends ManagePostState {}
+
 class CreatePostSucceedState extends ManagePostState {}
+
+class DeletePostSucceedState extends ManagePostState {}
+
+class ManagePostSucceedState extends ManagePostState {}
 
 class ManagePostFailedState extends ManagePostState {
   final List<String> _errors;

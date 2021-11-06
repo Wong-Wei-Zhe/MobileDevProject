@@ -10,6 +10,7 @@ part 'postcard_state.dart';
 
 class PostcardBloc extends Bloc<PostcardEvent, PostcardState> {
   PostcardApiProvider postCardApi;
+  late String _loggedUser;
 
   PostcardBloc(this.postCardApi) : super(const PostcardState()) {
     on<PostcardEvent>(_postCardEvent);
@@ -30,7 +31,8 @@ class PostcardBloc extends Bloc<PostcardEvent, PostcardState> {
                   description: data["description"],
                   imageUrl: data["image"],
                   date: data["date"],
-                  author: data["author"]))
+                  author: data["author"],
+                  selfAuthor: data["author"] == _loggedUser ? true : false))
             });
         print("DATA LENGTH!");
         print(tempData.length);
@@ -47,12 +49,18 @@ class PostcardBloc extends Bloc<PostcardEvent, PostcardState> {
     });
   }
 
+  void logUserName(String userName) {
+    _loggedUser = userName;
+  }
+
   void _postCardEvent(PostcardEvent event, Emitter<PostcardState> emit) {
     emit(PostcardInitial());
   }
 
   void _postCardFetchEvent(
       PostCardFetchEvent event, Emitter<PostcardState> emit) {
+    // print('STATE STATUS');
+    // print(state);
     if (state.status == PostFetchStatus.initial) {
       postCardApi.sendGetPostcardRequest();
     }
@@ -60,7 +68,24 @@ class PostcardBloc extends Bloc<PostcardEvent, PostcardState> {
 
   void _postCardFetchSuccessEvent(
       PostCardFetchSuccessEvent event, Emitter<PostcardState> emit) {
-    emit(state.copyObj(
+    // print('STATE STATUS on BEFORE SUCCESS');
+    // print(state);
+    emit(state.copyWith(
         status: PostFetchStatus.success, postCards: event.postCards));
+    // print('STATE STATUS on FETCH SUCCESS');
+    // print(state);
+  }
+
+  @override
+  void onTransition(Transition<PostcardEvent, PostcardState> transition) {
+    super.onTransition(transition);
+    // print('Transisiton');
+    // print(transition.currentState.status);
+    // print(transition.nextState.status);
+    // print(transition.event);
+
+    //PostcardState(status: transition.currentState.status);
+    //transition.currentState.status;
+    // TODO: implement onTransition
   }
 }
