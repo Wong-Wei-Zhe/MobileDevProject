@@ -40,95 +40,134 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          TextFormField(
-            controller: _userNameField,
-            decoration: const InputDecoration(
-              icon: Icon(Icons.person),
-              hintText: 'Enter your author name',
-              labelText: 'Author Name',
+      body: SizedBox(
+        width: MediaQuery.of(context).size.width,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.6,
+              height: MediaQuery.of(context).size.width * 0.6,
+              child: LayoutBuilder(builder: (context, constraint) {
+                return Icon(Icons.local_post_office_rounded,
+                    size: constraint.biggest.height);
+              }),
             ),
-          ),
-          const SizedBox(
-            height: 30,
-          ),
-          ElevatedButton(
-            onPressed: () {
-              userAccBloc.add(UserSignInEvent(_userNameField.text));
-            },
-            child: const Text('Sign In'),
-          ),
-          BlocListener<UserAccountBloc, UserAccountState>(
-            listener: (context, state) {
-              if (state is UserSignInProgressingState) {
-                _snackBarCall('Logging In...');
-              }
-              if (state is UserSignInSuccessState) {
-                _snackBarCall('Success!');
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            PostMainPage(_userNameField.text)));
-              }
-              if (state is UserSignInFailedState) {
-                _snackBarCall(state.toString());
-              }
-            },
-            child: const SizedBox.shrink(),
-          ),
-          // ElevatedButton(
-          //   onPressed: () {
-          //     userAccBloc.add(UserClosedEvent());
-          //   },
-          //   child: const Text('Close'),
-          // ),
-          // ElevatedButton(
-          //   onPressed: () {
-          //     ////////
-          //     Navigator.push(
-          //       context,
-          //       MaterialPageRoute(builder: (context) => const PostMainPage()),
-          //     );
-          //     ////////////
-          //     // Navigator.push(
-          //     //   context,
-          //     //   MaterialPageRoute(
-          //     //       builder: (context)
-          //     //           //return const PostMainPage();
-          //     //           =>
-          //     //           BlocProvider.value(
-          //     //             value: BlocProvider.of<UserAccountBloc>(context),
-          //     //             child: const PostMainPage(),
-          //     //           )),
-          //     // );
-          //     ///////////
-          //     // Navigator.push(
-          //     //   context,
-          //     //   MaterialPageRoute(builder: (context) {
-          //     //     return MultiBlocProvider(
-          //     //       providers: [
-          //     //         BlocProvider<UserAccountBloc>(
-          //     //           create: (BuildContext context) => UserAccountBloc(
-          //     //               RepositoryProvider.of<PostcardApiProvider>(
-          //     //                   context)),
-          //     //         ),
-          //     //         // BlocProvider<BlocB>(
-          //     //         //   create: (BuildContext context) => BlocB(),
-          //     //         // ),
-          //     //       ],
-          //     //       child: const PostMainPage(),
-          //     //     );
-          //     //   }),
-          //     // );
-          //     ///////////
-          //   },
-          //   child: const Text('Navigate Test'),
-          // ),
-        ],
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(35.0),
+                boxShadow: const [
+                  BoxShadow(
+                      offset: Offset(0, 3), blurRadius: 5, color: Colors.grey)
+                ],
+              ),
+              width: MediaQuery.of(context).size.width * 0.9,
+              child: TextFormField(
+                controller: _userNameField,
+                decoration: const InputDecoration(
+                  icon: Padding(
+                    padding: EdgeInsets.only(left: 15),
+                    child: Icon(Icons.person),
+                  ),
+                  border: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  errorBorder: InputBorder.none,
+                  disabledBorder: InputBorder.none,
+                  hintText: 'Enter your author name',
+                  labelText: 'Author Name',
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 30,
+            ),
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.8,
+              child: ElevatedButton(
+                onPressed: () {
+                  userAccBloc.add(UserSignInEvent(_userNameField.text));
+                },
+                child: const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(
+                    'Sign In',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+            ),
+            BlocListener<UserAccountBloc, UserAccountState>(
+              listener: (context, state) {
+                if (state is UserSignInProgressingState) {
+                  _snackBarCall('Logging In...');
+                }
+                if (state is UserSignInSuccessState) {
+                  _snackBarCall('Success!');
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              PostMainPage(_userNameField.text)));
+                }
+                if (state is UserSignInFailedState) {
+                  _snackBarCall(state.toString());
+                }
+              },
+              child: const SizedBox.shrink(),
+            ),
+            // ElevatedButton(
+            //   onPressed: () {
+            //     userAccBloc.add(UserClosedEvent());
+            //   },
+            //   child: const Text('Close'),
+            // ),
+            // ElevatedButton(
+            //   onPressed: () {
+            //     ////////
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(builder: (context) => const PostMainPage()),
+            //     );
+            //     ////////////
+            //     // Navigator.push(
+            //     //   context,
+            //     //   MaterialPageRoute(
+            //     //       builder: (context)
+            //     //           //return const PostMainPage();
+            //     //           =>
+            //     //           BlocProvider.value(
+            //     //             value: BlocProvider.of<UserAccountBloc>(context),
+            //     //             child: const PostMainPage(),
+            //     //           )),
+            //     // );
+            //     ///////////
+            //     // Navigator.push(
+            //     //   context,
+            //     //   MaterialPageRoute(builder: (context) {
+            //     //     return MultiBlocProvider(
+            //     //       providers: [
+            //     //         BlocProvider<UserAccountBloc>(
+            //     //           create: (BuildContext context) => UserAccountBloc(
+            //     //               RepositoryProvider.of<PostcardApiProvider>(
+            //     //                   context)),
+            //     //         ),
+            //     //         // BlocProvider<BlocB>(
+            //     //         //   create: (BuildContext context) => BlocB(),
+            //     //         // ),
+            //     //       ],
+            //     //       child: const PostMainPage(),
+            //     //     );
+            //     //   }),
+            //     // );
+            //     ///////////
+            //   },
+            //   child: const Text('Navigate Test'),
+            // ),
+          ],
+        ),
       ),
     );
   }
