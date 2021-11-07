@@ -132,6 +132,7 @@ class _PostMainPageState extends State<PostMainPage> {
                   _selectedFilterValue = 'My Post';
                 });
                 _filterOptionChanged('My Post');
+                Navigator.pop(context);
               },
             ),
             ListTile(
@@ -157,9 +158,12 @@ class _PostMainPageState extends State<PostMainPage> {
         width: MediaQuery.of(context).size.width,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Row(
+            Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              alignment: WrapAlignment.start,
               children: [
                 ElevatedButton(
                   onPressed: () async {
@@ -188,12 +192,6 @@ class _PostMainPageState extends State<PostMainPage> {
                         status: PostFetchStatus.refresh));
                   },
                   child: const Text('Refresh'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    _testRemove();
-                  },
-                  child: const Text('Remove Test'),
                 ),
                 SizedBox(
                   width: 100,

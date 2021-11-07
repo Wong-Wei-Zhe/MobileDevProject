@@ -18,16 +18,64 @@ class PostCardDetails extends StatelessWidget {
             SizedBox(
               width: MediaQuery.of(context).size.width,
               height: 300,
-              child: Image.network(postCard.imageUrl),
+              child: Image.network(
+                postCard.imageUrl,
+                errorBuilder: (BuildContext context, Object exception,
+                    StackTrace? stackTrace) {
+                  return LayoutBuilder(builder: (context, constraint) {
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.error_outline_outlined,
+                            size: constraint.biggest.width * 0.4),
+                        const FittedBox(
+                          fit: BoxFit.fitWidth,
+                          child: Text(
+                            'Image Error',
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    );
+                  });
+                },
+              ),
             ),
-            const Text('Title'),
-            Text(postCard.title),
-            const Text('Description'),
-            Text(postCard.description),
-            const Text('Date'),
-            Text(postCard.date),
-            const Text('Date author'),
-            Text(postCard.author),
+            const Text(
+              'Title',
+              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              postCard.title,
+              style: const TextStyle(fontSize: 17),
+            ),
+            const Text(
+              'Description',
+              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              postCard.description,
+              style: const TextStyle(fontSize: 17),
+            ),
+            const Text(
+              'Date',
+              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              postCard.date,
+              style: const TextStyle(fontSize: 17),
+            ),
+            const Text(
+              'Author',
+              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              postCard.author,
+              style: const TextStyle(fontSize: 17),
+            ),
           ],
         ),
       ),
