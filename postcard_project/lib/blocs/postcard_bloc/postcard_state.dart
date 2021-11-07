@@ -7,6 +7,8 @@ enum PostFetchStatus {
   nothingnew,
   removeat,
   refresh,
+  favorite,
+  ownpost,
 }
 
 class PostcardState extends Equatable {

@@ -23,6 +23,7 @@ class _PostMainPageState extends State<PostMainPage> {
   late final UserAccountBloc userAccBloc;
   late final PostcardBloc postcardBloc;
   late final ManagePostBloc _managePostBloc;
+  String _selectedFilterValue = "All";
 
   @override
   void initState() {
@@ -48,6 +49,30 @@ class _PostMainPageState extends State<PostMainPage> {
         reason: SnackBarClosedReason.remove,
       )
       ..showSnackBar(snackBar);
+  }
+
+  List<DropdownMenuItem<String>> get _dropdownFilterItems {
+    List<DropdownMenuItem<String>> menuItems = [
+      const DropdownMenuItem(child: Text('All'), value: 'All'),
+      const DropdownMenuItem(child: Text('Favorite'), value: 'Favorite'),
+      const DropdownMenuItem(child: Text('My Post'), value: 'My Post'),
+    ];
+    return menuItems;
+  }
+
+  void _filterOptionChanged(String filterValue) {
+    if (filterValue == 'All') {
+      postcardBloc
+          .add(const PostCardFetchEvent(status: PostFetchStatus.refresh));
+    } else if (filterValue == 'Favorite') {
+      postcardBloc.add(PostCardFetchEvent(
+          status: PostFetchStatus.favorite,
+          postCards: postcardBloc.state.postCards));
+    } else {
+      postcardBloc.add(PostCardFetchEvent(
+          status: PostFetchStatus.ownpost,
+          postCards: postcardBloc.state.postCards));
+    }
   }
 
   void _testEncode() {
@@ -102,7 +127,12 @@ class _PostMainPageState extends State<PostMainPage> {
             ListTile(
               leading: const Icon(Icons.message),
               title: const Text('My Post'),
-              onTap: () {},
+              onTap: () {
+                setState(() {
+                  _selectedFilterValue = 'My Post';
+                });
+                _filterOptionChanged('My Post');
+              },
             ),
             ListTile(
               leading: const Icon(Icons.account_circle),
@@ -157,6 +187,19 @@ class _PostMainPageState extends State<PostMainPage> {
                   },
                   child: const Text('Remove Test'),
                 ),
+                SizedBox(
+                  width: 100,
+                  height: 50,
+                  child: DropdownButtonFormField(
+                      value: _selectedFilterValue,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          _selectedFilterValue = newValue!;
+                        });
+                        _filterOptionChanged(newValue!);
+                      },
+                      items: _dropdownFilterItems),
+                ),
               ],
             ),
             BlocBuilder<PostcardBloc, PostcardState>(
@@ -190,13 +233,59 @@ class _PostMainPageState extends State<PostMainPage> {
                     // TODO: Handle this case.
                     break;
                   case PostFetchStatus.nothingnew:
-                    // TODO: Handle this case.
+                    // PlaceHolder
                     break;
                   case PostFetchStatus.removeat:
-                    // TODO: Handle this case.
+                    // PlaceHolder
                     break;
                   case PostFetchStatus.refresh:
                     return const CircularProgressIndicator();
+                    break;
+                  case PostFetchStatus.favorite:
+                    return Expanded(
+                      child: ListView.builder(
+                        itemCount: state.postCards.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return state.postCards[index].favorite
+                              ? InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                PostCardDetails(
+                                                    state.postCards[index])));
+                                  },
+                                  child: PostCardDisplay(state.postCards[index],
+                                      widget._userName, index),
+                                )
+                              : const SizedBox.shrink();
+                        },
+                      ),
+                    );
+                    break;
+                  case PostFetchStatus.ownpost:
+                    return Expanded(
+                      child: ListView.builder(
+                        itemCount: state.postCards.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return state.postCards[index].selfAuthor
+                              ? InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                PostCardDetails(
+                                                    state.postCards[index])));
+                                  },
+                                  child: PostCardDisplay(state.postCards[index],
+                                      widget._userName, index),
+                                )
+                              : const SizedBox.shrink();
+                        },
+                      ),
+                    );
                     break;
                 }
                 return const Text('');
@@ -212,11 +301,18 @@ class _PostMainPageState extends State<PostMainPage> {
                   postcardBloc.add(PostCardFetchEvent(
                       status: PostFetchStatus.removeat,
                       postCards: postcardBloc.state.postCards,
-                      removeIndex: _managePostBloc.lastDeletedIndex));
+                      removeIndex: _managePostBloc.lastDeletedIndex,
+                      deleteAtStatus: postcardBloc.state.status));
                 }
                 if (state is ManagePostFailedState) {
                   _snackBarCall(state.toString());
                 }
+                // if (state is CreatePostSucceedState) {
+                //   setState(() {
+                //     _selectedFilterValue = 'My Post';
+                //   });
+                //   _filterOptionChanged('My Post');
+                // }
               },
               child: const SizedBox.shrink(),
             ),

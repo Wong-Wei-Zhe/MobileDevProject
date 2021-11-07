@@ -93,11 +93,23 @@ class PostcardBloc extends Bloc<PostcardEvent, PostcardState> {
     }
     if (state.status == PostFetchStatus.removeat) {
       event.postCards.removeAt(event.removeIndex);
-      emit(state.copyWith(
-          status: PostFetchStatus.success, postCards: event.postCards));
+      PostFetchStatus emitStatus = PostFetchStatus.success;
+      if (event.deleteAtStatus != PostFetchStatus.initial) {
+        emitStatus = event.deleteAtStatus;
+      }
+
+      emit(state.copyWith(status: emitStatus, postCards: event.postCards));
     }
     if (state.status == PostFetchStatus.refresh) {
       postCardApi.sendGetPostcardRequest();
+    }
+    if (state.status == PostFetchStatus.favorite) {
+      _getFavoritePost(event.postCards).then((value) => emit(
+          state.copyWith(status: PostFetchStatus.favorite, postCards: value)));
+    }
+    if (state.status == PostFetchStatus.ownpost) {
+      emit(state.copyWith(
+          status: PostFetchStatus.ownpost, postCards: event.postCards));
     }
   }
 
@@ -111,16 +123,32 @@ class PostcardBloc extends Bloc<PostcardEvent, PostcardState> {
     // print(state);
   }
 
+  Future<List<PostCardModel>> _getFavoritePost(
+      List<PostCardModel> postCards) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    dynamic encodedFavoriteList;
+    List<String> favoriteList = [];
+    if (prefs.containsKey('favoritelist')) {
+      encodedFavoriteList = prefs.getString('favoritelist');
+      jsonDecode(encodedFavoriteList).forEach((data) => favoriteList.add(data));
+    }
+
+    for (int i = 0; i < postCards.length; i++) {
+      if (favoriteList.contains(postCards[i].id)) {
+        postCards[i].favorite = true;
+      }
+    }
+
+    return postCards;
+  }
+
   @override
   void onTransition(Transition<PostcardEvent, PostcardState> transition) {
     super.onTransition(transition);
-    print('Transisiton');
-    print(transition.currentState.status);
-    print(transition.nextState.status);
-    print(transition.event);
-
-    //PostcardState(status: transition.currentState.status);
-    //transition.currentState.status;
-    // TODO: implement onTransition
+    // print('Transisiton');
+    // print(transition.currentState.status);
+    // print(transition.nextState.status);
+    // print(transition.event);
   }
 }
