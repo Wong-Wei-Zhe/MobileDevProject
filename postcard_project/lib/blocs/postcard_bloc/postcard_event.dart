@@ -7,7 +7,15 @@ abstract class PostcardEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class PostCardFetchEvent extends PostcardEvent {}
+class PostCardFetchEvent extends PostcardEvent {
+  final PostFetchStatus status;
+  final List<PostCardModel> postCards;
+  final int removeIndex;
+  const PostCardFetchEvent(
+      {this.status = PostFetchStatus.initial,
+      this.postCards = const <PostCardModel>[],
+      this.removeIndex = 0});
+}
 
 class PostCardFetchSuccessEvent extends PostcardEvent {
   final List<PostCardModel> postCards;

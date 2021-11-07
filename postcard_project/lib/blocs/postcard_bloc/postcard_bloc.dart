@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:intl/intl.dart';
 import 'package:postcard_project/models/postcard_model.dart';
 import 'package:postcard_project/services/postcard_api_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,7 +14,7 @@ class PostcardBloc extends Bloc<PostcardEvent, PostcardState> {
   PostcardApiProvider postCardApi;
   late String _loggedUser;
 
-  PostcardBloc(this.postCardApi) : super(const PostcardState()) {
+  PostcardBloc(this.postCardApi) : super(PostcardState()) {
     on<PostcardEvent>(_postCardEvent);
     on<PostCardFetchEvent>(_postCardFetchEvent);
     on<PostCardFetchSuccessEvent>(_postCardFetchSuccessEvent);
@@ -48,13 +49,15 @@ class PostcardBloc extends Bloc<PostcardEvent, PostcardState> {
     }
 
     List<PostCardModel> tempData = [];
+    DateTime tempDate;
     decodedMessage["data"]["posts"].forEach((data) => {
+          tempDate = DateTime.parse(data["date"]),
           tempData.add(PostCardModel(
             id: data["_id"],
             title: data["title"],
             description: data["description"],
             imageUrl: data["image"],
-            date: data["date"],
+            date: DateFormat("yyyy-MM-dd hh:mm:ss").format(tempDate),
             author: data["author"],
             selfAuthor: data["author"] == _loggedUser ? true : false,
             favorite: favoriteList.contains(data["_id"]) ? true : false,
@@ -62,7 +65,9 @@ class PostcardBloc extends Bloc<PostcardEvent, PostcardState> {
         });
     print("DATA LENGTH!");
     print(tempData.length);
-    add(PostCardFetchSuccessEvent(tempData));
+    //add(PostCardFetchSuccessEvent(tempData));
+    add(PostCardFetchEvent(
+        status: PostFetchStatus.success, postCards: tempData));
   }
 
   void logUserName(String userName) {
@@ -75,9 +80,23 @@ class PostcardBloc extends Bloc<PostcardEvent, PostcardState> {
 
   void _postCardFetchEvent(
       PostCardFetchEvent event, Emitter<PostcardState> emit) {
-    // print('STATE STATUS');
-    // print(state);
+    print('STATE STATUS');
+    print(state);
+    state.status = event.status;
+    state.postCards = event.postCards;
     if (state.status == PostFetchStatus.initial) {
+      postCardApi.sendGetPostcardRequest();
+    }
+    if (state.status == PostFetchStatus.success) {
+      emit(state.copyWith(
+          status: PostFetchStatus.success, postCards: event.postCards));
+    }
+    if (state.status == PostFetchStatus.removeat) {
+      event.postCards.removeAt(event.removeIndex);
+      emit(state.copyWith(
+          status: PostFetchStatus.success, postCards: event.postCards));
+    }
+    if (state.status == PostFetchStatus.refresh) {
       postCardApi.sendGetPostcardRequest();
     }
   }
@@ -95,10 +114,10 @@ class PostcardBloc extends Bloc<PostcardEvent, PostcardState> {
   @override
   void onTransition(Transition<PostcardEvent, PostcardState> transition) {
     super.onTransition(transition);
-    // print('Transisiton');
-    // print(transition.currentState.status);
-    // print(transition.nextState.status);
-    // print(transition.event);
+    print('Transisiton');
+    print(transition.currentState.status);
+    print(transition.nextState.status);
+    print(transition.event);
 
     //PostcardState(status: transition.currentState.status);
     //transition.currentState.status;

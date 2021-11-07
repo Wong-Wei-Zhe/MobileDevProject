@@ -59,9 +59,10 @@ class _PostMainPageState extends State<PostMainPage> {
   }
 
   void _testRemove() {
-    print(postcardBloc.state.postCards[1].author);
-    postcardBloc.state.postCards.removeAt(1);
-    print(postcardBloc.state.postCards[1].author);
+    postcardBloc.add(PostCardFetchEvent(
+        status: PostFetchStatus.removeat,
+        postCards: postcardBloc.state.postCards,
+        removeIndex: 1));
   }
 
   @override
@@ -145,7 +146,8 @@ class _PostMainPageState extends State<PostMainPage> {
                     //userAccBloc.add(UserSignInEvent());
                     print('ON BUTTON');
                     print(postcardBloc.state);
-                    postcardBloc.add(PostCardFetchEvent());
+                    postcardBloc.add(const PostCardFetchEvent(
+                        status: PostFetchStatus.refresh));
                   },
                   child: const Text('Refresh'),
                 ),
@@ -161,7 +163,7 @@ class _PostMainPageState extends State<PostMainPage> {
               builder: (context, state) {
                 switch (state.status) {
                   case PostFetchStatus.initial:
-                    postcardBloc.add(PostCardFetchEvent());
+                    postcardBloc.add(const PostCardFetchEvent());
                     return const CircularProgressIndicator();
                     break;
                   case PostFetchStatus.success:
@@ -177,8 +179,8 @@ class _PostMainPageState extends State<PostMainPage> {
                                       builder: (context) => PostCardDetails(
                                           state.postCards[index])));
                             },
-                            child: PostCardDisplay(
-                                state.postCards[index], widget._userName),
+                            child: PostCardDisplay(state.postCards[index],
+                                widget._userName, index),
                           );
                         },
                       ),
@@ -190,8 +192,14 @@ class _PostMainPageState extends State<PostMainPage> {
                   case PostFetchStatus.nothingnew:
                     // TODO: Handle this case.
                     break;
+                  case PostFetchStatus.removeat:
+                    // TODO: Handle this case.
+                    break;
+                  case PostFetchStatus.refresh:
+                    return const CircularProgressIndicator();
+                    break;
                 }
-                return Text('data');
+                return const Text('');
               },
             ),
             BlocListener<ManagePostBloc, ManagePostState>(
@@ -201,6 +209,10 @@ class _PostMainPageState extends State<PostMainPage> {
                 }
                 if (state is DeletePostSucceedState) {
                   _snackBarCall('Deleted Successfully');
+                  postcardBloc.add(PostCardFetchEvent(
+                      status: PostFetchStatus.removeat,
+                      postCards: postcardBloc.state.postCards,
+                      removeIndex: _managePostBloc.lastDeletedIndex));
                 }
                 if (state is ManagePostFailedState) {
                   _snackBarCall(state.toString());

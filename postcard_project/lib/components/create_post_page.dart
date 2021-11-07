@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:postcard_project/blocs/manage_post_bloc/manage_post_bloc.dart';
+import 'package:postcard_project/blocs/postcard_bloc/postcard_bloc.dart';
 
 class CreatePostPage extends StatefulWidget {
   const CreatePostPage({Key? key}) : super(key: key);
@@ -14,11 +15,13 @@ class _CreatePostPageState extends State<CreatePostPage> {
   final _descriptionTextField = TextEditingController();
   final _imgUrlTextField = TextEditingController();
   late final ManagePostBloc _managePostBloc;
+  late final PostcardBloc _postcardBloc;
   bool _submitButtonAllowStatus = false;
 
   @override
   void initState() {
     _managePostBloc = BlocProvider.of<ManagePostBloc>(context);
+    _postcardBloc = BlocProvider.of<PostcardBloc>(context);
     _titleTextField.addListener(_ifSubmitPostCardAllow);
     _descriptionTextField.addListener(_ifSubmitPostCardAllow);
     _imgUrlTextField.addListener(_ifSubmitPostCardAllow);
@@ -128,6 +131,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
               if (state is CreatePostSucceedState) {
                 _snackBarCall('Postcard Submitted.');
                 Navigator.of(context).pop();
+                _postcardBloc.add(
+                    const PostCardFetchEvent(status: PostFetchStatus.refresh));
               }
               if (state is ManagePostFailedState) {
                 _snackBarCall(state.toString());

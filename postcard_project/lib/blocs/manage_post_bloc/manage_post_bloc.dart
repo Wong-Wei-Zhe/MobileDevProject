@@ -9,6 +9,7 @@ part 'manage_post_state.dart';
 
 class ManagePostBloc extends Bloc<ManagePostEvent, ManagePostState> {
   PostcardApiProvider postCardApi;
+  int lastDeletedIndex = 0;
 
   ManagePostBloc(this.postCardApi) : super(ManagePostInitial()) {
     on<ManagePostEvent>(_managePostEvent);
@@ -68,6 +69,7 @@ class ManagePostBloc extends Bloc<ManagePostEvent, ManagePostState> {
 
   void _deletePostEvent(DeletePostEvent event, Emitter<ManagePostState> emit) {
     postCardApi.sendDeletePostRequest(event.postId);
+    lastDeletedIndex = event.index;
     emit(DeletePostSubmittingState());
   }
 

@@ -1,12 +1,19 @@
 part of 'postcard_bloc.dart';
 
-enum PostFetchStatus { initial, success, failure, nothingnew }
+enum PostFetchStatus {
+  initial,
+  success,
+  failure,
+  nothingnew,
+  removeat,
+  refresh,
+}
 
 class PostcardState extends Equatable {
-  final PostFetchStatus status;
-  final List<PostCardModel> postCards;
+  PostFetchStatus status;
+  List<PostCardModel> postCards;
 
-  const PostcardState(
+  PostcardState(
       {this.status = PostFetchStatus.initial,
       this.postCards = const <PostCardModel>[]});
 

@@ -9,7 +9,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 class PostCardDisplay extends StatefulWidget {
   final PostCardModel postCard;
   final String _userName;
-  const PostCardDisplay(this.postCard, this._userName, {Key? key})
+  final int _index;
+  const PostCardDisplay(this.postCard, this._userName, this._index, {Key? key})
       : super(key: key);
 
   @override
@@ -110,8 +111,11 @@ class _PostCardDisplayState extends State<PostCardDisplay> {
                                             style: TextStyle(fontSize: 30),
                                           ),
                                           onPressed: () => {
-                                            managePostBloc.add(DeletePostEvent(
-                                                widget.postCard.id)),
+                                            managePostBloc.add(
+                                              DeletePostEvent(
+                                                  widget.postCard.id,
+                                                  widget._index),
+                                            ),
                                             Navigator.pop(context)
                                           },
                                         ),
