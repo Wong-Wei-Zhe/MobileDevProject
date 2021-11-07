@@ -132,8 +132,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                 _snackBarCall('Postcard Submitted.');
                 _postcardBloc.add(
                     const PostCardFetchEvent(status: PostFetchStatus.refresh));
-                //_managePostBloc.add(CreatePostSucceedEvent());
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(true);
               }
               if (state is ManagePostFailedState) {
                 _snackBarCall(state.toString());

@@ -162,12 +162,20 @@ class _PostMainPageState extends State<PostMainPage> {
             Row(
               children: [
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     //userAccBloc.add(UserSignInEvent());
-                    Navigator.push(
+                    bool createPostResult = false;
+                    createPostResult = await Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => const CreatePostPage()));
+
+                    if (createPostResult) {
+                      setState(() {
+                        _selectedFilterValue = 'All';
+                      });
+                      _filterOptionChanged('All');
+                    }
                   },
                   child: const Text('Create Post'),
                 ),
@@ -307,12 +315,6 @@ class _PostMainPageState extends State<PostMainPage> {
                 if (state is ManagePostFailedState) {
                   _snackBarCall(state.toString());
                 }
-                // if (state is CreatePostSucceedState) {
-                //   setState(() {
-                //     _selectedFilterValue = 'My Post';
-                //   });
-                //   _filterOptionChanged('My Post');
-                // }
               },
               child: const SizedBox.shrink(),
             ),
