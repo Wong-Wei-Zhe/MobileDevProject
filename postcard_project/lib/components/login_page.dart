@@ -64,7 +64,7 @@ class _LoginPageState extends State<LoginPage> {
           BlocListener<UserAccountBloc, UserAccountState>(
             listener: (context, state) {
               if (state is UserSignInProgressingState) {
-                _snackBarCall('Loging In...');
+                _snackBarCall('Logging In...');
               }
               if (state is UserSignInSuccessState) {
                 _snackBarCall('Success!');

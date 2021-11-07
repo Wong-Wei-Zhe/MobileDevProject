@@ -6,7 +6,10 @@ import 'package:postcard_project/blocs/manage_post_bloc/manage_post_bloc.dart';
 import 'package:postcard_project/blocs/postcard_bloc/postcard_bloc.dart';
 import 'package:postcard_project/blocs/user_account_bloc/user_account_bloc.dart';
 import 'package:postcard_project/components/create_post_page.dart';
+import 'package:postcard_project/components/post_card_details.dart';
 import 'package:postcard_project/components/post_card_display.dart';
+
+import 'about_page.dart';
 
 class PostMainPage extends StatefulWidget {
   final String _userName;
@@ -67,6 +70,58 @@ class _PostMainPageState extends State<PostMainPage> {
       appBar: AppBar(
         title: const Text('Post Card Page'),
       ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              decoration: const BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Column(
+                children: [
+                  const Text(
+                    'Welcome',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                    ),
+                  ),
+                  Text(
+                    widget._userName,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 35,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.message),
+              title: const Text('My Post'),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: const Icon(Icons.account_circle),
+              title: const Text('About'),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => const AboutPage()));
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.settings),
+              title: const Text('Log Out'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        ),
+      ),
       body: SizedBox(
         width: MediaQuery.of(context).size.width,
         child: Column(
@@ -114,8 +169,17 @@ class _PostMainPageState extends State<PostMainPage> {
                       child: ListView.builder(
                         itemCount: state.postCards.length,
                         itemBuilder: (BuildContext context, int index) {
-                          return PostCardDisplay(
-                              state.postCards[index], widget._userName);
+                          return InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => PostCardDetails(
+                                          state.postCards[index])));
+                            },
+                            child: PostCardDisplay(
+                                state.postCards[index], widget._userName),
+                          );
                         },
                       ),
                     );
