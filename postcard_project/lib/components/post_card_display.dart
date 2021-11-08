@@ -18,6 +18,7 @@ class PostCardDisplay extends StatefulWidget {
 }
 
 class _PostCardDisplayState extends State<PostCardDisplay> {
+  ///Update locally stored favorite list in corresponding to post ID
   void _favoriteOnPress() async {
     final prefs = await SharedPreferences.getInstance();
     List<String> favoriteList = [];
@@ -96,64 +97,88 @@ class _PostCardDisplayState extends State<PostCardDisplay> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    const Padding(
-                      padding: EdgeInsets.only(top: 8.0, left: 8.0),
-                      child: Text(
-                        'Title',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                    const FittedBox(
+                      fit: BoxFit.contain,
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 8.0, left: 8.0),
+                        child: Text(
+                          'Title',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 1.0, left: 8.0),
-                      child: Text(
-                        widget.postCard.title,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                    FittedBox(
+                      fit: BoxFit.contain,
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 1.0, left: 8.0),
+                        child: Text(
+                          widget.postCard.title,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                     ),
-                    const Padding(
-                      padding: EdgeInsets.only(top: 8.0, left: 8.0),
-                      child: Text(
-                        'Description',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                    const FittedBox(
+                      fit: BoxFit.contain,
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 8.0, left: 8.0),
+                        child: Text(
+                          'Description',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 1.0, left: 8.0),
-                      child: Text(
-                        widget.postCard.description,
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
+                    FittedBox(
+                      fit: BoxFit.contain,
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 1.0, left: 8.0),
+                        child: Text(
+                          widget.postCard.description,
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                     ),
-                    const Padding(
-                      padding: EdgeInsets.only(top: 8.0, left: 8.0),
-                      child: Text(
-                        'Date',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                    const FittedBox(
+                      fit: BoxFit.contain,
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 8.0, left: 8.0),
+                        child: Text(
+                          'Date',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 1.0, left: 8.0),
-                      child: Text(
-                        widget.postCard.date,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                    FittedBox(
+                      fit: BoxFit.contain,
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 1.0, left: 8.0),
+                        child: Text(
+                          widget.postCard.date,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                     ),
-                    const Padding(
-                      padding: EdgeInsets.only(top: 8.0, left: 8.0),
-                      child: Text(
-                        'Author',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                    const FittedBox(
+                      fit: BoxFit.contain,
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 8.0, left: 8.0),
+                        child: Text(
+                          'Author',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 1.0, left: 8.0),
-                      child: Text(
-                        widget.postCard.author,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                    FittedBox(
+                      fit: BoxFit.contain,
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 1.0, left: 8.0),
+                        child: Text(
+                          widget.postCard.author,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                     ),
                   ],

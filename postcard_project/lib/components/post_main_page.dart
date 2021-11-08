@@ -11,6 +11,7 @@ import 'package:postcard_project/components/post_card_display.dart';
 
 import 'about_page.dart';
 
+///This is the main page that display the list of postcards
 class PostMainPage extends StatefulWidget {
   final String _userName;
   const PostMainPage(this._userName, {Key? key}) : super(key: key);
@@ -32,16 +33,18 @@ class _PostMainPageState extends State<PostMainPage> {
     _managePostBloc = BlocProvider.of<ManagePostBloc>(context);
     postcardBloc.logUserName(widget._userName);
     _managePostBloc.initializeApiListen();
-    postcardBloc.initializeApiListen();
+    //postcardBloc.initializeApiListen();
     super.initState();
   }
 
   @override
   void dispose() {
+    //Placeholder, resource cleanup when login widget terminate
     //userAccBloc.add(UserClosedEvent());
     super.dispose();
   }
 
+  ///Reusable Snackbar, mainly used for Postcard management feedback.
   void _snackBarCall(String message) {
     final snackBar = SnackBar(content: Text(message));
     ScaffoldMessenger.of(context)
@@ -60,6 +63,8 @@ class _PostMainPageState extends State<PostMainPage> {
     return menuItems;
   }
 
+  ///Keep track of dropdown menu selection and run its corresponding
+  ///state call to update list for all, refreash, favorite and own post
   void _filterOptionChanged(String filterValue) {
     if (filterValue == 'All') {
       postcardBloc
@@ -93,6 +98,8 @@ class _PostMainPageState extends State<PostMainPage> {
                 children: [
                   const Text(
                     'Welcome',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 24,
@@ -100,6 +107,8 @@ class _PostMainPageState extends State<PostMainPage> {
                   ),
                   Text(
                     widget._userName,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -153,7 +162,6 @@ class _PostMainPageState extends State<PostMainPage> {
                     runSpacing: 8,
                     crossAxisAlignment: WrapCrossAlignment.center,
                     alignment: WrapAlignment.spaceBetween,
-                    //direction: Axis.horizontal,
                     children: [
                       Wrap(
                         crossAxisAlignment: WrapCrossAlignment.center,
@@ -166,7 +174,6 @@ class _PostMainPageState extends State<PostMainPage> {
                             padding: const EdgeInsets.only(left: 12.0),
                             child: ElevatedButton(
                               onPressed: () async {
-                                //userAccBloc.add(UserSignInEvent());
                                 bool createPostResult = false;
                                 createPostResult = await Navigator.push(
                                         context,
@@ -188,8 +195,10 @@ class _PostMainPageState extends State<PostMainPage> {
                           IconButton(
                             icon: const Icon(Icons.refresh_rounded),
                             onPressed: () {
-                              postcardBloc.add(const PostCardFetchEvent(
-                                  status: PostFetchStatus.refresh));
+                              setState(() {
+                                _selectedFilterValue = 'All';
+                              });
+                              _filterOptionChanged('All');
                             },
                           ),
                         ],
@@ -205,20 +214,23 @@ class _PostMainPageState extends State<PostMainPage> {
                             'Filter:',
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 12.0),
-                            child: SizedBox(
-                              width: 85,
-                              height: 50,
-                              child: DropdownButtonFormField(
-                                  value: _selectedFilterValue,
-                                  onChanged: (String? newValue) {
-                                    setState(() {
-                                      _selectedFilterValue = newValue!;
-                                    });
-                                    _filterOptionChanged(newValue!);
-                                  },
-                                  items: _dropdownFilterItems),
+                          FittedBox(
+                            fit: BoxFit.contain,
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 12.0),
+                              child: SizedBox(
+                                width: 85,
+                                height: 50,
+                                child: DropdownButtonFormField(
+                                    value: _selectedFilterValue,
+                                    onChanged: (String? newValue) {
+                                      setState(() {
+                                        _selectedFilterValue = newValue!;
+                                      });
+                                      _filterOptionChanged(newValue!);
+                                    },
+                                    items: _dropdownFilterItems),
+                              ),
                             ),
                           ),
                         ],
@@ -260,13 +272,13 @@ class _PostMainPageState extends State<PostMainPage> {
                     );
                     break;
                   case PostFetchStatus.failure:
-                    // TODO: Handle this case.
+                    // PlaceHolder for pagination feature
                     break;
                   case PostFetchStatus.nothingnew:
-                    // PlaceHolder
+                    // PlaceHolder for pagination feature
                     break;
                   case PostFetchStatus.removeat:
-                    // PlaceHolder
+                    // PlaceHolder for pagination feature
                     break;
                   case PostFetchStatus.refresh:
                     return const Center(
@@ -326,6 +338,7 @@ class _PostMainPageState extends State<PostMainPage> {
               },
             ),
             BlocListener<ManagePostBloc, ManagePostState>(
+              //BlocListener for delete postcard feedback
               listener: (context, state) {
                 if (state is DeletePostSubmittingState) {
                   _snackBarCall('Deleting Postcard...');

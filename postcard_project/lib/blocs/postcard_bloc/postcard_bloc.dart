@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 part 'postcard_event.dart';
 part 'postcard_state.dart';
 
+///This is a Bloc to manage state for postcards request and retrieval.
 class PostcardBloc extends Bloc<PostcardEvent, PostcardState> {
   PostcardApiProvider postCardApi;
   late String _loggedUser;
@@ -20,16 +21,25 @@ class PostcardBloc extends Bloc<PostcardEvent, PostcardState> {
     on<PostCardFetchSuccessEvent>(_postCardFetchSuccessEvent);
   }
 
+  ///API listener to handle general response related to postcards retrieval
   void initializeApiListen() {
-    postCardApi.postCardAPIController.listen((message) {
-      final decodedMessage = jsonDecode(message);
+    try {
+      postCardApi.postCardAPIController.listen((message) {
+        final decodedMessage = jsonDecode(message);
 
-      if (decodedMessage["type"] == 'all_posts') {
-        _allPostProccess(decodedMessage);
-      }
-    });
+        //To detect incoming postcards
+        if (decodedMessage["type"] == 'all_posts') {
+          _allPostProccess(decodedMessage);
+        }
+      });
+    } catch (e) {
+      //print("Get all post errors.");
+    }
   }
 
+  ///A function to proccess through incoming postcards to detect
+  ///if postcard is in favorite list and if postcard belongs to
+  ///user currently logged in.
   void _allPostProccess(dynamic decodedMessage) async {
     final prefs = await SharedPreferences.getInstance();
 
@@ -60,6 +70,7 @@ class PostcardBloc extends Bloc<PostcardEvent, PostcardState> {
         status: PostFetchStatus.success, postCards: tempData));
   }
 
+  ///Keeping a record of user currently logged in.
   void logUserName(String userName) {
     _loggedUser = userName;
   }

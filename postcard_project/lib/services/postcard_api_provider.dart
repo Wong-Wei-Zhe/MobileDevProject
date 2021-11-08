@@ -13,11 +13,13 @@ class PostcardApiProvider {
     });
   }
 
+  ///API Call for User Sign In Request
   void sendSignInRequest(String userNameStr) {
     _postCardWebSocket.sink
         .add('{"type": "sign_in", "data": {"name": "$userNameStr"}}');
   }
 
+  ///API Call for Get Postcards Request
   void sendGetPostcardRequest(
       {String lastId = '', String sortBy = 'date', int limit = 10}) {
     _postCardWebSocket.sink.add(
@@ -26,16 +28,19 @@ class PostcardApiProvider {
     //     '{"type": "get_posts", "data": {"lastId": "$lastId", "sortBy": "$sortBy", "limit": $limit}}');
   }
 
+  ///API Call for Create New Postcard Request
   void sendCreatePostRequest(String title, String description, String imagUrl) {
     _postCardWebSocket.sink.add(
         '{"type": "create_post", "data": {"title": "$title", "description": "$description", "image": "$imagUrl"}}');
   }
 
+  ///API Call for Delete Postcard Request
   void sendDeletePostRequest(String postId) {
     _postCardWebSocket.sink
         .add('{"type": "delete_post", "data": {"postId": "$postId"}}');
   }
 
+  ///Clean up API and stream
   void terminateAPIStream() {
     _postCardWebSocket.sink.close();
     _postCardAPIController.close();
