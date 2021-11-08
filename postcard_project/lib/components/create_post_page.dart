@@ -36,6 +36,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
     super.dispose();
   }
 
+  ///Ensure all field are not empty
   void _ifSubmitPostCardAllow() {
     setState(() {
       if (_titleTextField.text.isNotEmpty &&
@@ -48,6 +49,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
     });
   }
 
+  ///Reusable Snackbar, mainly used for Postcard management feedback.
   void _snackBarCall(String message) {
     final snackBar = SnackBar(content: Text(message));
     ScaffoldMessenger.of(context)
@@ -206,6 +208,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   _snackBarCall('Submitting Postcard...');
                 }
                 if (state is CreatePostSucceedState) {
+                  //NOTE: Sometime API didn't respond with confirmation message
+                  //need to go back manually and refresh
                   _snackBarCall('Postcard Submitted.');
                   _postcardBloc.add(const PostCardFetchEvent(
                       status: PostFetchStatus.refresh));

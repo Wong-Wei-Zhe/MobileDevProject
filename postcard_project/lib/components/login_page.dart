@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:postcard_project/blocs/postcard_bloc/postcard_bloc.dart';
 import 'package:postcard_project/blocs/user_account_bloc/user_account_bloc.dart';
 import 'package:postcard_project/components/post_main_page.dart';
 
@@ -13,11 +14,14 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _userNameField = TextEditingController();
   late final UserAccountBloc userAccBloc;
+  late final PostcardBloc postcardBloc;
 
   @override
   void initState() {
     userAccBloc = BlocProvider.of<UserAccountBloc>(context);
+    postcardBloc = BlocProvider.of<PostcardBloc>(context);
     userAccBloc.initializeApiListen();
+    postcardBloc.initializeApiListen();
     super.initState();
   }
 
@@ -28,6 +32,7 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
+  ///Reusable Snackbar, mainly used for Postcard log in status feedback.
   void _snackBarCall(String message) {
     final snackBar = SnackBar(content: Text(message));
     ScaffoldMessenger.of(context)
@@ -109,6 +114,8 @@ class _LoginPageState extends State<LoginPage> {
                   }
                   if (state is UserSignInSuccessState) {
                     _snackBarCall('Success!');
+                    postcardBloc.add(const PostCardFetchEvent(
+                        status: PostFetchStatus.refresh));
                     Navigator.push(
                         context,
                         MaterialPageRoute(

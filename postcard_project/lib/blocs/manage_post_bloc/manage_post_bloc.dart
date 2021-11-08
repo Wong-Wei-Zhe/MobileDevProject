@@ -7,6 +7,8 @@ import 'package:postcard_project/services/postcard_api_provider.dart';
 part 'manage_post_event.dart';
 part 'manage_post_state.dart';
 
+///This is a Bloc to perform management of post related to:
+///Create Post and Delete Post
 class ManagePostBloc extends Bloc<ManagePostEvent, ManagePostState> {
   PostcardApiProvider postCardApi;
   int lastDeletedIndex = 0;
@@ -21,16 +23,19 @@ class ManagePostBloc extends Bloc<ManagePostEvent, ManagePostState> {
     on<ManagePostFailEvent>(_managePostFailEvent);
   }
 
+  ///API listener to handle general response related to management of post
   void initializeApiListen() {
     try {
       postCardApi.postCardAPIController.listen((message) {
         final decodedMessage = jsonDecode(message);
 
         try {
+          //Response for successful create postcard
           if (decodedMessage["type"] == 'new_post') {
             add(CreatePostSucceedEvent());
           }
 
+          //Response for successful delete postcard
           if (decodedMessage["type"] == 'delete_post') {
             if (decodedMessage["data"]["response"] == 'OK') {
               add(DeletePostSucceedEvent());
@@ -39,6 +44,7 @@ class ManagePostBloc extends Bloc<ManagePostEvent, ManagePostState> {
             }
           }
 
+          //General Error response
           if (decodedMessage["type"] == 'error') {
             add(ManagePostFailEvent(decodedMessage["errors"].cast<String>()));
           }
