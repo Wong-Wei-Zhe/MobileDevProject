@@ -3,7 +3,6 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 
 class PostcardApiProvider {
   final String _postCardAPI = 'ws://besquare-demo.herokuapp.com';
-  //final String _postCardAPI = 'wss://ws.binaryws.com/websockets/v3?app_id=1089';
   late final _postCardWebSocket;
   final _postCardAPIController = BehaviorSubject<String>();
 
@@ -43,5 +42,4 @@ class PostcardApiProvider {
   }
 
   dynamic get postCardAPIController => _postCardAPIController;
-  //dynamic get postCardWebSocket => _postCardWebSocket;
 }

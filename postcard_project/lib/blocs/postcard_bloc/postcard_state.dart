@@ -35,23 +35,3 @@ class PostcardState extends Equatable {
 }
 
 class PostcardInitial extends PostcardState {}
-
-// class PostcardFetchState extends PostcardState {
-//   final PostFetchStatus status;
-//   final List<PostCardModel> postCards;
-
-//   const PostcardFetchState(
-//       {this.status = PostFetchStatus.initial,
-//       this.postCards = const <PostCardModel>[]});
-
-//   PostcardFetchState copyObj(
-//       {PostFetchStatus? status, List<PostCardModel>? postCards}) {
-//     return PostcardFetchState(
-//         status: status ?? this.status, postCards: postCards ?? this.postCards);
-//   }
-
-//   @override
-//   String toString() {
-//     return 'PostState { status: $status, posts: ${postCards.length} }';
-//   }
-// }

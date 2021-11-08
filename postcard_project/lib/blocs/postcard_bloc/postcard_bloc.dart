@@ -27,14 +27,6 @@ class PostcardBloc extends Bloc<PostcardEvent, PostcardState> {
       if (decodedMessage["type"] == 'all_posts') {
         _allPostProccess(decodedMessage);
       }
-
-      // List<String> lastPostList = [];
-      // print('LENGTH!');
-      // print(decodedMessage["data"]["posts"].length);
-      // decodedMessage["data"]["posts"]
-      //     .forEach((data) => lastPostList.add(data["_id"]));
-      // print(lastPostList);
-      // postCardApi.sendGetPostcardRequest(lastPostList[0], 'date', 1);
     });
   }
 
@@ -63,9 +55,7 @@ class PostcardBloc extends Bloc<PostcardEvent, PostcardState> {
             favorite: favoriteList.contains(data["_id"]) ? true : false,
           ))
         });
-    print("DATA LENGTH!");
-    print(tempData.length);
-    //add(PostCardFetchSuccessEvent(tempData));
+
     add(PostCardFetchEvent(
         status: PostFetchStatus.success, postCards: tempData));
   }
@@ -80,8 +70,6 @@ class PostcardBloc extends Bloc<PostcardEvent, PostcardState> {
 
   void _postCardFetchEvent(
       PostCardFetchEvent event, Emitter<PostcardState> emit) {
-    print('STATE STATUS');
-    print(state);
     state.status = event.status;
     state.postCards = event.postCards;
     if (state.status == PostFetchStatus.initial) {
@@ -115,12 +103,8 @@ class PostcardBloc extends Bloc<PostcardEvent, PostcardState> {
 
   void _postCardFetchSuccessEvent(
       PostCardFetchSuccessEvent event, Emitter<PostcardState> emit) {
-    // print('STATE STATUS on BEFORE SUCCESS');
-    // print(state);
     emit(state.copyWith(
         status: PostFetchStatus.success, postCards: event.postCards));
-    // print('STATE STATUS on FETCH SUCCESS');
-    // print(state);
   }
 
   Future<List<PostCardModel>> _getFavoritePost(

@@ -25,12 +25,7 @@ class ManagePostBloc extends Bloc<ManagePostEvent, ManagePostState> {
     postCardApi.postCardAPIController.listen((message) {
       final decodedMessage = jsonDecode(message);
 
-      if (decodedMessage["type"] != 'all_posts') {
-        print(decodedMessage);
-      }
-
       if (decodedMessage["type"] == 'new_post') {
-        print('Succed');
         add(CreatePostSucceedEvent());
       }
 

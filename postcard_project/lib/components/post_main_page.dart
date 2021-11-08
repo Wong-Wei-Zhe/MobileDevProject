@@ -75,21 +75,6 @@ class _PostMainPageState extends State<PostMainPage> {
     }
   }
 
-  void _testEncode() {
-    List<String> testData = ['22', '33', '44'];
-    dynamic encodedStuff = jsonEncode(testData);
-    dynamic decodedStuff = jsonDecode(encodedStuff);
-    decodedStuff.forEach((data) => print(data));
-    //print(decodedStuff);
-  }
-
-  void _testRemove() {
-    postcardBloc.add(PostCardFetchEvent(
-        status: PostFetchStatus.removeat,
-        postCards: postcardBloc.state.postCards,
-        removeIndex: 1));
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
