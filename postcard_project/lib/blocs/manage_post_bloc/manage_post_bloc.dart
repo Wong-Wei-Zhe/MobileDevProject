@@ -22,25 +22,33 @@ class ManagePostBloc extends Bloc<ManagePostEvent, ManagePostState> {
   }
 
   void initializeApiListen() {
-    postCardApi.postCardAPIController.listen((message) {
-      final decodedMessage = jsonDecode(message);
+    try {
+      postCardApi.postCardAPIController.listen((message) {
+        final decodedMessage = jsonDecode(message);
 
-      if (decodedMessage["type"] == 'new_post') {
-        add(CreatePostSucceedEvent());
-      }
+        try {
+          if (decodedMessage["type"] == 'new_post') {
+            add(CreatePostSucceedEvent());
+          }
 
-      if (decodedMessage["type"] == 'delete_post') {
-        if (decodedMessage["data"]["response"] == 'OK') {
-          add(DeletePostSucceedEvent());
-        } else {
-          add(ManagePostFailEvent(decodedMessage["errors"].cast<String>()));
+          if (decodedMessage["type"] == 'delete_post') {
+            if (decodedMessage["data"]["response"] == 'OK') {
+              add(DeletePostSucceedEvent());
+            } else {
+              add(ManagePostFailEvent(decodedMessage["errors"].cast<String>()));
+            }
+          }
+
+          if (decodedMessage["type"] == 'error') {
+            add(ManagePostFailEvent(decodedMessage["errors"].cast<String>()));
+          }
+        } catch (e) {
+          add(const ManagePostFailEvent(['Something went wrong.']));
         }
-      }
-
-      if (decodedMessage["type"] == 'error') {
-        add(ManagePostFailEvent(decodedMessage["errors"].cast<String>()));
-      }
-    });
+      });
+    } catch (e) {
+      add(const ManagePostFailEvent(['Error Web Connection Problem']));
+    }
   }
 
   void _managePostEvent(ManagePostEvent event, Emitter<ManagePostState> emit) {}

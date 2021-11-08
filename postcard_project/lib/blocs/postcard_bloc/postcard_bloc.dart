@@ -21,13 +21,17 @@ class PostcardBloc extends Bloc<PostcardEvent, PostcardState> {
   }
 
   void initializeApiListen() {
-    postCardApi.postCardAPIController.listen((message) {
-      final decodedMessage = jsonDecode(message);
+    try {
+      postCardApi.postCardAPIController.listen((message) {
+        final decodedMessage = jsonDecode(message);
 
-      if (decodedMessage["type"] == 'all_posts') {
-        _allPostProccess(decodedMessage);
-      }
-    });
+        if (decodedMessage["type"] == 'all_posts') {
+          _allPostProccess(decodedMessage);
+        }
+      });
+    } catch (e) {
+      //print("Get all post errors.");
+    }
   }
 
   void _allPostProccess(dynamic decodedMessage) async {
