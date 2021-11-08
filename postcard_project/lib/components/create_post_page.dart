@@ -81,47 +81,138 @@ class _CreatePostPageState extends State<CreatePostPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create PostCard Page'),
+        title: const Text('Create New PostCard'),
       ),
       body: Column(
         children: [
           Column(
             children: <Widget>[
-              const Text('Title'),
-              TextFormField(
-                controller: _titleTextField,
-                maxLines: 1,
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15.0),
+                    boxShadow: const [
+                      BoxShadow(
+                          offset: Offset(0, 3),
+                          blurRadius: 5,
+                          color: Colors.grey)
+                    ],
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextFormField(
+                      controller: _titleTextField,
+                      maxLines: 1,
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        errorBorder: InputBorder.none,
+                        disabledBorder: InputBorder.none,
+                        hintText: 'Enter Title of Postcard',
+                        labelText: 'PostCard Title',
+                      ),
+                    ),
+                  ),
+                ),
               ),
-              const Text('Description'),
-              TextFormField(
-                controller: _descriptionTextField,
-                maxLines: 10,
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15.0),
+                    boxShadow: const [
+                      BoxShadow(
+                          offset: Offset(0, 3),
+                          blurRadius: 5,
+                          color: Colors.grey)
+                    ],
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextFormField(
+                      controller: _descriptionTextField,
+                      maxLines: 10,
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        errorBorder: InputBorder.none,
+                        disabledBorder: InputBorder.none,
+                        hintText: 'Enter Description of Postcard',
+                        labelText: 'PostCard Description',
+                      ),
+                    ),
+                  ),
+                ),
               ),
-              const Text('Image Url'),
-              TextFormField(
-                controller: _imgUrlTextField,
-                maxLines: 1,
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15.0),
+                    boxShadow: const [
+                      BoxShadow(
+                          offset: Offset(0, 3),
+                          blurRadius: 5,
+                          color: Colors.grey)
+                    ],
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextFormField(
+                      controller: _imgUrlTextField,
+                      maxLines: 1,
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        errorBorder: InputBorder.none,
+                        disabledBorder: InputBorder.none,
+                        hintText: 'Enter Image Link',
+                        labelText: 'PostCard Image',
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
-          Row(
-            children: <Widget>[
-              ElevatedButton(
-                onPressed: () {
-                  //userAccBloc.add(UserSignInEvent());
-                  Navigator.of(context).pop();
-                },
-                child: const Text('Cancel'),
-              ),
-              ElevatedButton(
-                onPressed: !_submitButtonAllowStatus
-                    ? null
-                    : () {
-                        _postCardSubmitButton();
-                      },
-                child: const Text('Submit Postcard'),
-              ),
-            ],
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    alignment: WrapAlignment.spaceBetween,
+                    spacing: 30,
+                    direction: Axis.horizontal,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          //userAccBloc.add(UserSignInEvent());
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text('Cancel'),
+                      ),
+                      ElevatedButton(
+                        onPressed: !_submitButtonAllowStatus
+                            ? null
+                            : () {
+                                _postCardSubmitButton();
+                              },
+                        child: const Text('Submit Postcard'),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
           BlocListener<ManagePostBloc, ManagePostState>(
             listener: (context, state) {

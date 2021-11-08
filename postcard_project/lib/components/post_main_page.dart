@@ -94,7 +94,7 @@ class _PostMainPageState extends State<PostMainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Post Card Page'),
+        title: const Text('PostCards'),
       ),
       drawer: Drawer(
         child: ListView(
@@ -160,51 +160,86 @@ class _PostMainPageState extends State<PostMainPage> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Wrap(
-              spacing: 10,
-              runSpacing: 10,
-              alignment: WrapAlignment.start,
+            Row(
               children: [
-                ElevatedButton(
-                  onPressed: () async {
-                    //userAccBloc.add(UserSignInEvent());
-                    bool createPostResult = false;
-                    createPostResult = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const CreatePostPage()));
+                Expanded(
+                  child: Wrap(
+                    spacing: 5,
+                    runSpacing: 8,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    alignment: WrapAlignment.spaceBetween,
+                    //direction: Axis.horizontal,
+                    children: [
+                      Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        alignment: WrapAlignment.start,
+                        spacing: 5,
+                        runSpacing: 8,
+                        direction: Axis.horizontal,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(left: 12.0),
+                            child: ElevatedButton(
+                              onPressed: () async {
+                                //userAccBloc.add(UserSignInEvent());
+                                bool createPostResult = false;
+                                createPostResult = await Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const CreatePostPage())) ??
+                                    false;
 
-                    if (createPostResult) {
-                      setState(() {
-                        _selectedFilterValue = 'All';
-                      });
-                      _filterOptionChanged('All');
-                    }
-                  },
-                  child: const Text('Create Post'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    //userAccBloc.add(UserSignInEvent());
-                    print('ON BUTTON');
-                    print(postcardBloc.state);
-                    postcardBloc.add(const PostCardFetchEvent(
-                        status: PostFetchStatus.refresh));
-                  },
-                  child: const Text('Refresh'),
-                ),
-                SizedBox(
-                  width: 100,
-                  height: 50,
-                  child: DropdownButtonFormField(
-                      value: _selectedFilterValue,
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          _selectedFilterValue = newValue!;
-                        });
-                        _filterOptionChanged(newValue!);
-                      },
-                      items: _dropdownFilterItems),
+                                if (createPostResult) {
+                                  setState(() {
+                                    _selectedFilterValue = 'All';
+                                  });
+                                  _filterOptionChanged('All');
+                                }
+                              },
+                              child: const Text('Create Post'),
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.refresh_rounded),
+                            onPressed: () {
+                              postcardBloc.add(const PostCardFetchEvent(
+                                  status: PostFetchStatus.refresh));
+                            },
+                          ),
+                        ],
+                      ),
+                      Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        alignment: WrapAlignment.start,
+                        spacing: 5,
+                        runSpacing: 8,
+                        direction: Axis.horizontal,
+                        children: [
+                          const Text(
+                            'Filter:',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 12.0),
+                            child: SizedBox(
+                              width: 85,
+                              height: 50,
+                              child: DropdownButtonFormField(
+                                  value: _selectedFilterValue,
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      _selectedFilterValue = newValue!;
+                                    });
+                                    _filterOptionChanged(newValue!);
+                                  },
+                                  items: _dropdownFilterItems),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -213,7 +248,11 @@ class _PostMainPageState extends State<PostMainPage> {
                 switch (state.status) {
                   case PostFetchStatus.initial:
                     postcardBloc.add(const PostCardFetchEvent());
-                    return const CircularProgressIndicator();
+                    return const Center(
+                        child: Padding(
+                      padding: EdgeInsets.only(top: 10.0),
+                      child: CircularProgressIndicator(),
+                    ));
                     break;
                   case PostFetchStatus.success:
                     return Expanded(
@@ -245,7 +284,11 @@ class _PostMainPageState extends State<PostMainPage> {
                     // PlaceHolder
                     break;
                   case PostFetchStatus.refresh:
-                    return const CircularProgressIndicator();
+                    return const Center(
+                        child: Padding(
+                      padding: EdgeInsets.only(top: 10.0),
+                      child: CircularProgressIndicator(),
+                    ));
                     break;
                   case PostFetchStatus.favorite:
                     return Expanded(
